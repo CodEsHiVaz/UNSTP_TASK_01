@@ -1,9 +1,9 @@
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
-    'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
-    'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
+    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -85,7 +85,6 @@ body {
   overflow-x: hidden;
 }
 
-
 a {
   color: inherit;
   text-decoration: none;
@@ -94,5 +93,51 @@ a {
 @media (prefers-color-scheme: light) {
   html {
     color-scheme: light;
+  }
+}
+.circle-spin-2 {
+  --size: 50px;
+  --stroke-width: calc(var(--size) / 6);
+  --accent-opacity: 0.25;
+  --color: currentColor;
+  --animation-timing-function: linear;
+  --animation-duration: 1s;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--size);
+  height: var(--size);
+}
+
+.circle-spin-2::before,
+.circle-spin-2::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-width: var(--stroke-width);
+  border-style: solid;
+  border-radius: 50%;
+  transform: rotate(0deg);
+  animation: var(--animation-timing-function) var(--animation-duration) infinite
+    circle-spin-2-animation;
+}
+
+.circle-spin-2::before {
+  border-color: var(--color) var(--color) var(--color) transparent;
+  opacity: var(--accent-opacity);
+}
+
+.circle-spin-2::after {
+  border-color: transparent transparent transparent var(--color);
+}
+
+@keyframes circle-spin-2-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
   }
 }
