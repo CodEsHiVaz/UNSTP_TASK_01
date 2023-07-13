@@ -38,8 +38,6 @@ export default function Home() {
   };
   const handelSubmit = async (e) => {
     e.preventDefault();
-    console.log("ffffffffffffffffffffffffffff");
-
     try {
       const res = await axios.post("api/seats/book", {
         noOfSeats: numOfSeats,
