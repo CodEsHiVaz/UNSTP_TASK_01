@@ -99,8 +99,7 @@ export default function Home() {
             </div>{" "}
           </div>
           <div className={styles.bookingSection}>
-            <h2 className={styles.head}>Bus Ticket Booking System</h2>
-
+            <h2 className={styles.head}> Ticket Booking System</h2>
             <div className={styles.bookingForm}>
               {" "}
               <form onSubmit={handelSubmit}>
@@ -128,7 +127,7 @@ export default function Home() {
                     Resete Booking
                   </button>
                   <button className={styles.submit} type="submit">
-                    Submit
+                    Reserve
                   </button>
                 </div>
               </form>
