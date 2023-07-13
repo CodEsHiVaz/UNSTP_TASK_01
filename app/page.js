@@ -1,95 +1,122 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import { useEffect, useState } from "react";
+import styles from "./page.module.css";
+import axios from "axios";
+import Toast from "@/Components/Toast";
 
 export default function Home() {
+  const [seats, setseats] = useState([]);
+  const [numOfSeats, setnumOfSeats] = useState();
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
+
+  const showToastMessage = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
+  };
+  const getdata = async () => {
+    const res = await axios.get("api/seats");
+    const data = await res.data.seatstatus;
+    setseats(data);
+  };
+  const reset = async () => {
+    try {
+      const res = await axios.patch("api/seats/reset");
+      const data = await res.data.data;
+      getdata();
+      showToastMessage(`Booking reset successfully!`, "success");
+    } catch (error) {
+
+      console.log("reset  error:", error);
+      showToastMessage("Failed while reset booking", "error");
+    }
+  };
+  const handelSubmit = async (e) => {
+    e.preventDefault();
+    console.log("ffffffffffffffffffffffffffff");
+
+    try {
+      const res = await axios.post("api/seats/book", {
+        noOfSeats: numOfSeats,
+      });
+      const data = await res.data.data;
+      getdata();
+      showToastMessage(`${numOfSeats} Seat booked successfully!`, "success");
+    } catch (error) {
+      console.log("handelSubmit  error:", error);
+      showToastMessage("Failed to book seat. Please try again.", "error");
+    }
+  };
+  useEffect(() => {
+    getdata();
+  }, []);
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+      <div className={styles.parrent}>
+        <div className={styles.seatsSection}>
+          <div className={styles.seatContainer}>
+            {seats &&
+              seats.map((elem) => {
+                return (
+                  <div
+                    key={elem._id}
+                    id={elem.status ? styles.red : styles.green}
+                    className={styles.box}
+                  >
+                    <p>{elem.seatNumber}</p>
+                  </div>
+                );
+              })}
+          </div>
+          <div className={styles.index}>
+            <div>
+              {" "}
+              <div id={styles.red}>0</div>
+              <p>Booked Seats</p>
+            </div>
+            <div>
+              {" "}
+              <div id={styles.green}>0</div>
+              <p>Available Seats</p>
+            </div>
+          </div>{" "}
+        </div>
+        <div className={styles.bookingSection}>
+          <h2 className={styles.head}>Bus Ticket Booking System</h2>
+
+          <div className={styles.bookingForm}>
+            {" "}
+            <form onSubmit={handelSubmit}>
+              <div className={styles.inputSection}>
+                <label htmlFor="seatnumbr">
+                  Enter Number of Seats to be book
+                </label>
+                <input
+                  type="number"
+                  onChange={(e) => setnumOfSeats(e.target.value)}
+                  name="seatnumbr"
+                  id="seatnumbr"
+                />
+              </div>
+
+              <div className={styles.butnDiv}>
+                <button onClick={reset} className={styles.reset} type="button">
+                  Resete Booking
+                </button>
+                <button className={styles.submit} type="submit">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+      {showToast && <Toast message={toastMessage} type={toastType} />}
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
     </main>
-  )
+  );
 }
